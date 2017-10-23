@@ -1,0 +1,151 @@
+---
+name: "Cloud-native Toolchain for the Hotels Microservices sample"
+description: "Hotels Microservices Example"
+required:
+ - deploy
+
+# Github repos
+hotels-ui-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "hotels-ui"
+    repo_url: "https://github.com/kalyani75/hotels-ui"
+    type: clone
+    has_issues: true
+
+hotels-controller-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "hotels-controller"
+    repo_url: "https://github.com/kalyani75/hotels-controller"
+    type: clone
+    has_issues: true
+
+hotels-locationQ-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "hotels-locationQ"
+    repo_url: "https://github.com/kalyani75/hotels-locationQ"
+    type: clone
+    has_issues: true
+
+hotels-hotelQ-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "hotels-hotelQ"
+    repo_url: "https://github.com/kalyani75/hotels-hotelQ"
+    type: clone
+    has_issues: true
+
+hotels-dealsQ-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "hotels-dealsQ"
+    repo_url: "https://github.com/kalyani75/hotels-dealsQ"
+    type: clone
+    has_issues: true
+    
+    
+hotels-ui-build:
+  service_id: pipeline
+  parameters:
+    name: "hotels-ui"
+    configuration:
+      content: $file(hotels-ui.pipeline.yml)
+      env:
+        REPO: "hotels-ui-repo"
+        REPO_BRANCH: "master"
+       # CF_APP_NAME: "{{deploy.parameters.hotels-ui-app-name}}"
+        SPACE_NAME: "{{deploy.parameters.selected-space}}"
+        ORG_NAME: "{{deploy.parameters.selected-organization}}"
+        REGION_ID: "{{deploy.parameters.selected-region}}"
+      execute: true
+    services: ["hotels-ui-repo"]
+  hidden: [form, description]
+
+hotels-hotelQ-build:
+  service_id: pipeline
+  parameters:
+    name: "hotels-hotelQ"
+    configuration:
+      content: $file(hotels-hotelQ.pipeline.yml)
+      env:
+        REPO: "hotels-hotelQ-repo"
+        REPO_BRANCH: "master"
+       # CF_APP_NAME: "{{deploy.parameters.hotels-hotelQ-app-name}}"
+        SPACE_NAME: "{{deploy.parameters.selected-space}}"
+        ORG_NAME: "{{deploy.parameters.selected-organization}}"
+        REGION_ID: "{{deploy.parameters.selected-region}}"
+      execute: true
+    services: ["hotels-hotelQ-repo"]
+  hidden: [form, description]
+
+hotels-locationQ-build:
+  service_id: pipeline
+  parameters:
+    name: "hotels-locationQ"
+    configuration:
+      content: $file(hotels-locationQ.pipeline.yml)
+      env:
+        REPO: "hotels-locationQ-repo"
+        REPO_BRANCH: "master"
+        CF_APP_NAME: "{{deploy.parameters.hotels-locationQ-app-name}}"
+        SPACE_NAME: "{{deploy.parameters.selected-space}}"
+        ORG_NAME: "{{deploy.parameters.selected-organization}}"
+        REGION_ID: "{{deploy.parameters.selected-region}}"
+      execute: true
+    services: ["hotels-locationQ-repo"]
+  hidden: [form, description]
+
+hotels-dealsQ-build:
+  service_id: pipeline
+  parameters:
+    name: "hotels-dealsQ"
+    configuration:
+      content: $file(hotels-dealsQ.pipeline.yml)
+      env:
+        REPO: "hotels-dealsQ-repo"
+        REPO_BRANCH: "master"   
+      #  CF_APP_NAME: "{{deploy.parameters.hotels-dealsQ-app-name}}"
+        SPACE_NAME: "{{deploy.parameters.selected-space}}"
+        ORG_NAME: "{{deploy.parameters.selected-organization}}"
+        REGION_ID: "{{deploy.parameters.selected-region}}"
+      execute: true
+    services: ["hotels-dealsQ-repo"]
+  hidden: [form, description]
+
+hotels-controller-build:
+  service_id: pipeline
+  parameters:
+    name: "hotels-controller"
+    configuration:
+      content: $file(hotels-controller.pipeline.yml)
+      env:
+        REPO: "hotels-controller-repo"
+        REPO_BRANCH: "master"  
+    #    CF_APP_NAME: "{{deploy.parameters.hotels-controller-app-name}}"
+        SPACE_NAME: "{{deploy.parameters.selected-space}}"
+        ORG_NAME: "{{deploy.parameters.selected-organization}}"
+        REGION_ID: "{{deploy.parameters.selected-region}}"
+      execute: true
+    services: ["hotels-controller-repo"]
+hidden: [form, description]
+
+#Web IDE
+webide:
+  service_id: orion
+
+#Deployment
+deploy:
+  schema:
+    $ref: deploy.json
+  service-category: pipeline
+  parameters:
+    selected-region: "{{region}}"
+    selected-organization: "{{organization}}"
+    selected-space: "{{space}}"
+    hotels-ui-app-name: "{{name}}-ui"
+    hotels-dealsQ-app-name: "{{name}}-dealsQ"
+    hotels-hotelQ-app-name: "{{name}}-hotelsQ"
+    hotels-locationQ-app-name: "{{name}}-locationQ"
+    hotels-controller-app-name: "{{name}}-controller"

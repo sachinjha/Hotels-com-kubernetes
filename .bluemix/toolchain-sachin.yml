@@ -1,0 +1,75 @@
+---
+name: "Cloud-native Toolchain for the Hotels sample"
+description: "With this cloud-native toolchain, you use the acme freight template to create a supply chain management web app and back end that consists of multiple microservices: a Controller API, an ERP API, and a WEB-UI. The toolchain is preconfigured for continuous delivery, source control, blue-green deployment, unit testing, and issue tracking.\n\nTo get started, click **Create**."
+required:
+ - deploy
+
+# Github repos
+
+
+
+hotels-event-create-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "hotels-event-create"
+    repo_url: "https://github.com/sachinjha/hotels-event-create"
+    type: existing
+    has_issues: true
+
+hotels-onboarding-ui-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "hotels-onboarding-ui-repo"
+    repo_url: "https://github.com/sachinjha/hotels-onboarding-ui"
+    type: existing
+    has_issues: true
+
+
+
+hotels-event-create-build:
+  service_id: pipeline
+  parameters:
+    name: "hotels-event-create"
+    configuration:
+      content: $file(hotels-event.pipeline.yml)
+      env:
+        REPO: "hotels-event-create-repo"
+        REPO_BRANCH: "master"
+        OPENWHISK_AUTH: "{{deploy.parameters.openwhisk_auth}}"
+        PACKAGE_NAME: "hotels-event"
+        CLOUDANT_DATABASE: "eventsdb"
+        SPACE_NAME: "{{deploy.parameters.selected-space}}"
+        ORG_NAME: "{{deploy.parameters.selected-organization}}"
+        REGION_ID: "{{deploy.parameters.selected-region}}"
+        API_KEY: "{{deploy.parameters.api_key}}"
+        API_SECRET: "{{deploy.parameters.api_secret}}"
+        API_HOST: "{{deploy.parameters.api_host}}"
+      execute: true
+    services: ["hotels-event-create-repo"]
+hidden: [form, description]
+
+#Web IDE
+webide:
+  service_id: orion
+
+#Deployment
+deploy:
+  schema:
+    $ref: deploy.json
+  service-category: pipeline
+  parameters:
+    selected-region: "{{region}}"
+    selected-organization: "{{organization}}"
+    selected-space: "{{space}}"
+    erp-app-name: "{{name}}-erp"
+    ui-app-name: "{{name}}-ui"
+    dealsQ-app-name: "{{name}}-dealsQuery"
+    locationQ-app-name: "{{name}}-locationQuery"
+    hotelQ-app-name: "{{name}}-hotelQuery"
+    controller-app-name: "{{name}}-controller"
+    webui-app-name: "{{name}}-webui"
+    onboarding-ui-app-name : "{{name}}-onboarding-ui"
+    openwhisk_auth: 
+    api_key:
+    api_secret:
+    api_host:
