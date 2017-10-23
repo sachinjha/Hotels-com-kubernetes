@@ -15,4 +15,4 @@ Once the API\_KEY  and API\_SECRET values are obtained, one should update the co
 
 
 ### Deploy Hotels Microservices as containers in Kubernetes Cluster on Bluemix
-> [![Deploy To Bluemix](./.bluemix/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy?repository=https%3A%2F%2Fgithub.com%2Fsachinkj%2FHotels-com.git&toolchain=kubernetes.yml&cm_mmc=github-readme--native-_-acme-_-create-toolchain&cm_mmca1=000019RT&cm_mmca2=10004796)
+> [![Deploy To Bluemix](./.bluemix/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy?repository=https%3A%2F%2Fgithub.com%2Fsachinjha%2FHotels.com-kubernetes.git&cm_mmc=github-readme--native-_-acme-_-create-toolchain&cm_mmca1=000019RT&cm_mmca2=10004796)
