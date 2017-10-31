@@ -10,7 +10,7 @@ hotels-controller-repo:
   service_id: githubpublic
   parameters:
     repo_name: "hotels-controller"
-    repo_url: "https://github.com/kalyani75/hotels-controller"
+    repo_url: "https://github.com/sachinjha/hotels-controller"
     type: fork
     has_issues: true
 
@@ -111,6 +111,9 @@ hotels-controller-build:
         SPACE_NAME: "{{deploy.parameters.selected-space}}"
         ORG_NAME: "{{deploy.parameters.selected-organization}}"
         REGION_ID: "{{deploy.parameters.selected-region}}"
+        BLUEMIX_API_KEY: "{{deploy.parameters.bluemix-api-key}}"
+        KUB_CLUSTER_NAME: "{{deploy.parameters.prod-cluster-name}}"
+        REGISTRY_NAMESPACE: "{{deploy.parameters.registry-namespac}}"
       execute: true
     services: ["hotels-controller-repo"]
   hidden: [form, description]
@@ -275,4 +278,7 @@ deploy:
     api_host:
     apic-username:
     apic-password:
+    bluemix-api-key:
+    prod-cluster-name:
+    registry-namespace:
     

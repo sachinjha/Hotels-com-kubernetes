@@ -51,9 +51,24 @@
     "api-app-name": {
       "description": "API cf app name",
       "type": "string"
+    },
+    "bluemix-api-key": {
+        "description": "Bluemix api key for deployment script to use",
+        "type": "string",
+        "pattern": "\\S"
+    },
+    "registry-namespace": {
+        "description": "registry namespace for images ",
+        "type": "string",
+        "pattern": "\\S"
+    },	    
+    "prod-cluster-name": {
+        "description": "kubernetes cluster name for deployment of services",
+        "type": "string",
+        "pattern": "\\S"
     }
   },
-  "required": ["selected-region", "selected-organization", "selected-space", "ui-app-name", "dealsQ-app-name", "hotelQ-app-name","locationQ-app-name","controller-app-name","messaging-app-name"],
+  "required": ["selected-region", "bluemix-api-key", "registry-namespace", "prod-cluster-name", "selected-organization", "selected-space", "ui-app-name", "dealsQ-app-name", "hotelQ-app-name","locationQ-app-name","controller-app-name","messaging-app-name"],
   "form": [
    {
       "type": "validator",
@@ -112,6 +127,24 @@
       "readonly": false,
       "title": "API APP Name",
       "key": "api-app-name"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "Registry namespace",
+      "key": "registry-namespace"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "Bluemix API Key",
+      "key": "bluemix-api-key"
+    },
+    {
+      "type": "text",
+      "readonly": false,
+      "title": "Kubernetes Cluster Name",
+      "key": "prod-cluster-name"
     },
     {
       "type": "table",
