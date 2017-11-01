@@ -1,14 +1,15 @@
 ---
+---
 stages:
 - name: BUILD
   inputs:
   - type: git
     branch: ${REPO_BRANCH}
-    service: ${REPO}
+    service: ${REPO}   
   triggers:
   - type: commit
   jobs:
-  - name: Build
+  - name: Build image
     type: builder
     build_type: cr
     artifact_dir: output
@@ -20,6 +21,3 @@ stages:
     script: |
       #!/bin/bash
       #set -x
-
-      echo -e "Build environment variables:"
-      
