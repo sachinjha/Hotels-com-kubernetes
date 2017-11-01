@@ -42,7 +42,6 @@ hotels-onboarding-ui-build:
     services: ["hotels-onboarding-ui-repo"]
   hidden: [form, description]
 
-
 hotels-controller-build:
   service_id: pipeline
   parameters:
@@ -51,7 +50,7 @@ hotels-controller-build:
       content: $file(hotels-container-projects.pipeline1.yml)
       env:
         REPO: "hotels-controller-repo"
-        REPO_BRANCH: "master"  
+        REPO_BRANCH: "master"
         CF_APP_NAME: "{{deploy.parameters.controller-app-name}}"
         LOCATION_APP_NAME: "{{deploy.parameters.locationQ-app-name}}"
         HOTEL_APP_NAME: "{{deploy.parameters.hotelQ-app-name}}"
@@ -65,7 +64,6 @@ hotels-controller-build:
       execute: true
     services: ["hotels-controller-repo"]
   hidden: [form, description]
-
 
 #Web IDE
 webide:
