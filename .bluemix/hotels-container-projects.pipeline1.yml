@@ -1,0 +1,60 @@
+---
+stages:
+- name: BUILD
+  inputs:
+  - type: git
+    branch: ${REPO_BRANCH}
+    service: ${REPO}
+  triggers:
+  - type: commit
+  jobs:
+  - name: Build
+    type: builder
+    build_type: cr
+    artifact_dir: output
+    target:
+      region_id: ${REGISTRY_REGION_ID}
+      api_key: ${API_KEY}
+    namespace: ${REGISTRY_NAMESPACE}
+    image_name: ${CF_APP_NAME}
+    script: |
+      #!/bin/bash
+      #set -x
+      echo "abc"
+- name: DEPLOY
+  inputs:
+  - type: job
+    stage: BUILD
+    job: Build
+  triggers:
+  - type: stage
+  properties:
+  - name: REPO_BRANCH
+    value: ${REPO_BRANCH}
+  - name: CF_APP_NAME
+    value: ${CF_APP_NAME}
+  - name: API_HOST
+    value: ${API_HOST}
+  - name: API_SECRET
+    value: ${API_SECRET}
+  - name: API_KEY
+    value: ${API_KEY}
+  jobs:
+  - name: Blue/Green Deploy
+    type: deployer
+    target:
+      region_id: ${REGION_ID}
+      organization: ${ORG_NAME}
+      space: ${SPACE_NAME}
+      application: ${CF_APP_NAME}
+    properties:
+      API_KEY: ${API_KEY}
+      API_SECRET: ${API_SECRET}
+      API_HOST: ${API_HOST}
+    script: |-
+      #!/bin/bash
+      if [ -z ${API_KEY} ]; then
+        echo Skipping onboarding ui app deployment as no API Key is configured
+        exit 1
+      fi
+      cf push "${CF_APP}" --hostname ${CF_APP_NAME}

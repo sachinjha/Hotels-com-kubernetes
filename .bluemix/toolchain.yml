@@ -48,7 +48,7 @@ hotels-controller-build:
   parameters:
     name: "hotels-controller"
     configuration:
-      content: $file(hotels-container-projects.pipeline.yml)
+      content: $file(hotels-container-projects.pipeline1.yml)
       env:
         REPO: "hotels-controller-repo"
         REPO_BRANCH: "master"  
