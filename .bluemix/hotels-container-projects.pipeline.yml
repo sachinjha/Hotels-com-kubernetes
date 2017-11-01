@@ -56,8 +56,6 @@ stages:
 
       echo -e "Existing images in registry"
       bx cr images
-
-
       for dir in amenitiesquery	controller	dealsquery hotelquery	locationquery	ui; do 
         pushd $dir
         echo "=========================================================="
@@ -86,68 +84,11 @@ stages:
           if [ -f helm-bluemix/values.yml ]; then
               echo "UPDATING DEPLOYMENT MANIFEST:"
               sed -i "s~^\([[:blank:]]*\)image-${dir}:.*$~\1image-${dir}: ${IMAGE_LOCATION}:${BUILD_NUMBER}~" helm-bluemix/values.yml
-              cat helm-bluemix/values.yml
-              
+              cat helm-bluemix/values.yml  
           else 
               echo -e "${red}Helm values file 'values.yml' not found at helm/values.yml ${no_color}"
               exit 1
           fi
-
           popd 
 
       done 
-
-- name: DEPLOY
-  inputs:
-  - type: job
-    stage: BUILD
-    job: Build image
-  jobs:
-  - name: Deploy Kubernetes Pod
-    type: deployer
-    target:
-      region_id: ${PROD_REGION_ID}
-      organization: ${PROD_ORG_NAME}
-      space: ${PROD_SPACE_NAME}
-      api_key: ${API_KEY}
-      kubernetes_cluster: ${PROD_CLUSTER_NAME}
-    script: |
-      #!/bin/bash
-      #set -x
-      #Check cluster availability
-      ip_addr=$(bx cs workers $PIPELINE_KUBERNETES_CLUSTER_NAME | grep normal | awk '{ print $2 }')
-      if [ -z $ip_addr ]; then
-        echo "$PIPELINE_KUBERNETES_CLUSTER_NAME not created or workers not ready"
-        exit 1
-      fi
-      #Connect to a different container-service api by uncommenting and specifying an api endpoint
-      #bx cs init --host https://us-south.containers.bluemix.net
-      echo ""
-      echo "Deploy using helm"
-
-      echo "Installing helm"
-      curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh
-      chmod 700 get_helm.sh
-      ./get_helm.sh
-
-      echo "Installing tiller"
-      helm init
-
-      echo "Deploying services"
-      helm package hotels.com
-      helm install hotels.com
-
-      helm status hotels.com
-
-      echo "DEPLOYING USING MANIFEST:"
-      cat deployment.yml
-      kubectl apply -f deployment.yml  
-      echo ""
-      echo "DEPLOYED SERVICE:"
-      kubectl describe services hello-service
-      echo ""
-      echo "DEPLOYED PODS:"
-      kubectl describe pods --selector app=hello-app
-      port=$(kubectl get services | grep hello-service | sed 's/.*:\([0-9]*\).*/\1/g')
-      echo ""
-      echo "VIEW THE APPLICATION AT: http://$ip_addr:$port"
