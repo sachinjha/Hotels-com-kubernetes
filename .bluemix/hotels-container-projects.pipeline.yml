@@ -1,0 +1,191 @@
+---
+stages:
+- name: BUILD
+  inputs:
+  - type: git
+    branch: ${REPO_BRANCH}
+    service: ${REPO}
+  triggers:
+  - type: commit
+  jobs:
+  - name: Build
+    type: builder
+    build_type: cr
+    artifact_dir: output
+    target:
+      region_id: ${REGISTRY_REGION_ID}
+      api_key: ${API_KEY}
+    namespace: ${REGISTRY_NAMESPACE}
+    image_name: ${CF_APP_NAME}
+    script: |
+      #!/bin/bash
+      #set -x
+
+      echo -e "Build environment variables:"
+      echo "REGISTRY_URL=${REGISTRY_URL}"
+      echo "REGISTRY_NAMESPACE=${REGISTRY_NAMESPACE}"
+      echo "IMAGE_NAME=${IMAGE_NAME}"
+      echo "BUILD_NUMBER=${BUILD_NUMBER}"
+      echo "ARCHIVE_DIR=${ARCHIVE_DIR}"
+
+      # Learn more about the available environment variables at:
+      # https://console.bluemix.net/docs/services/ContinuousDelivery/pipeline_deploy_var.html#deliverypipeline_environment
+
+      # To review or change build options use:
+      # bx cr build --help
+
+      if [ -z ${REGISTRY_URL} ]; then
+        REGISTRY_URL="registry.ng.bluemix.net"
+      fi
+
+      echo "=========================================================="
+      echo "Checking registry current plan and quota"
+      bx cr plan
+      bx cr quota
+      echo "If needed, discard older images using: bx cr image-rm"
+
+      echo "Checking registry namespace: ${REGISTRY_NAMESPACE}"
+      NS=$( bx cr namespaces | grep ${REGISTRY_NAMESPACE} ||: )
+      if [ -z ${NS} ]; then
+          echo "Registry namespace ${REGISTRY_NAMESPACE} not found, creating it."
+          bx cr namespace-add ${REGISTRY_NAMESPACE}
+          echo "Registry namespace ${REGISTRY_NAMESPACE} created."
+      else 
+          echo "Registry namespace ${REGISTRY_NAMESPACE} found."
+      fi
+
+      echo -e "Existing images in registry"
+      bx cr images
+
+
+      for dir in amenitiesquery	controller	dealsquery hotelquery	locationquery	ui; do 
+        pushd $dir
+        echo "=========================================================="
+        echo "Inside $dir"
+        echo "Checking for Dockerfile at the repository root"
+        if [ -f Dockerfile ]; then 
+          echo "Dockerfile found"
+        else
+            echo "Dockerfile not found"
+            exit 1
+        fi
+
+         
+          echo "=========================================================="
+          echo -e "Building container image: ${IMAGE_NAME}:${BUILD_NUMBER}"
+          IMAGE_LOCATION=${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}
+          set -x
+          bx cr build -t ${IMAGE_LOCATION}:${BUILD_NUMBER} .
+          set +x
+          bx cr image-inspect ${IMAGE_LOCATION}:${BUILD_NUMBER}
+
+           # IMAGE_NAME from build.properties is used by Vulnerability Advisor job to reference the image qualified location in registry
+          echo "IMAGE_NAME=${IMAGE_LOCATION}:${BUILD_NUMBER}" >> $ARCHIVE_DIR/build.properties
+
+          #Update deployment.yml with image name
+          if [ -f helm-bluemix/values.yml ]; then
+              echo "UPDATING DEPLOYMENT MANIFEST:"
+              sed -i "s~^\([[:blank:]]*\)image-${dir}:.*$~\1image-${dir}: ${IMAGE_LOCATION}:${BUILD_NUMBER}~" helm-bluemix/values.yml
+              cat helm-bluemix/values.yml
+              
+          else 
+              echo -e "${red}Helm values file 'values.yml' not found at helm/values.yml ${no_color}"
+              exit 1
+          fi
+
+          popd 
+
+      done 
+
+- name: DEPLOY
+  inputs:
+  - type: job
+    stage: BUILD
+    job: Build image
+  jobs:
+  - name: Deploy Kubernetes Pod
+    type: deployer
+    target:
+      region_id: ${PROD_REGION_ID}
+      organization: ${PROD_ORG_NAME}
+      space: ${PROD_SPACE_NAME}
+      api_key: ${API_KEY}
+      kubernetes_cluster: ${PROD_CLUSTER_NAME}
+    script: |
+      #!/bin/bash
+      #set -x
+      #Check cluster availability
+      ip_addr=$(bx cs workers $PIPELINE_KUBERNETES_CLUSTER_NAME | grep normal | awk '{ print $2 }')
+      if [ -z $ip_addr ]; then
+        echo "$PIPELINE_KUBERNETES_CLUSTER_NAME not created or workers not ready"
+        exit 1
+      fi
+      #Connect to a different container-service api by uncommenting and specifying an api endpoint
+      #bx cs init --host https://us-south.containers.bluemix.net
+      echo ""
+      echo "Deploy using helm"
+
+      echo "Installing helm"
+      curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh
+      chmod 700 get_helm.sh
+      ./get_helm.sh
+
+      echo "Installing tiller"
+      helm init
+
+      echo "Deploying services"
+      helm package hotels.com
+      helm install hotels.com
+
+      helm status hotels.com
+
+      echo "DEPLOYING USING MANIFEST:"
+      cat deployment.yml
+      kubectl apply -f deployment.yml  
+      echo ""
+      echo "DEPLOYED SERVICE:"
+      kubectl describe services hello-service
+      echo ""
+      echo "DEPLOYED PODS:"
+      kubectl describe pods --selector app=hello-app
+      port=$(kubectl get services | grep hello-service | sed 's/.*:\([0-9]*\).*/\1/g')
+      echo ""
+      echo "VIEW THE APPLICATION AT: http://$ip_addr:$port"
+
+- name: DEPLOY
+  inputs:
+  - type: job
+    stage: BUILD
+    job: Build
+  triggers:
+  - type: stage
+  properties:
+  - name: REPO_BRANCH
+    value: ${REPO_BRANCH}
+  - name: CF_APP_NAME
+    value: ${CF_APP_NAME}
+  - name: LOCATION_APP_NAME
+    value: ${LOCATION_APP_NAME}
+  - name: HOTEL_APP_NAME
+    value: ${HOTEL_APP_NAME}
+  - name: DEAL_APP_NAME
+    value: ${DEAL_APP_NAME}   
+  jobs:
+  - name: Blue/Green Deploy
+    type: deployer
+    target:
+      region_id: ${REGION_ID}
+      organization: ${ORG_NAME}
+      space: ${SPACE_NAME}
+      application: ${CF_APP_NAME}
+    script: |-
+      #!/bin/bash
+      domain=".mybluemix.net"
+      cf push "${CF_APP}" --hostname ${CF_APP_NAME} --no-start
+      cf set-env $CF_APP LOCATIONQUERYHOST  https://$LOCATION_APP_NAME$domain
+      cf set-env $CF_APP HOTELQUERYHOST  https://$HOTEL_APP_NAME$domain
+      cf set-env $CF_APP DEALQUERYHOST https://$DEAL_APP_NAME$domain
+      cf set-env $CF_APP LOCATIONQUERYPORT  443
+      cf set-env $CF_APP HOTELQUERYPORT 443
+      cf set-env $CF_APP DEALQUERYPORT 443
+      cf start $CF_APP
