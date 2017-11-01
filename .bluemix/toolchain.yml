@@ -14,6 +14,35 @@ hotels-controller-repo:
     type: fork
     has_issues: true
 
+hotels-onboarding-ui-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "hotels-onboarding-ui-repo"
+    repo_url: "https://github.com/kalyani75/hotels-onboarding-ui"
+    type: fork
+    has_issues: true
+
+hotels-onboarding-ui-build:
+  service_id: pipeline
+  parameters:
+    name: "hotels-onboarding-ui"
+    configuration:
+      content: $file(hotels-onboarding-ui.pipeline.yml)
+      env:
+        REPO: "hotels-onboarding-ui-repo"
+        REPO_BRANCH: "master"
+        CF_APP_NAME: "{{deploy.parameters.onboarding-ui-app-name}}"
+        SPACE_NAME: "{{deploy.parameters.selected-space}}"
+        ORG_NAME: "{{deploy.parameters.selected-organization}}"
+        REGION_ID: "{{deploy.parameters.selected-region}}"
+        API_KEY: "{{deploy.parameters.api_key}}"
+        API_SECRET: "{{deploy.parameters.api_secret}}"
+        API_HOST: "{{deploy.parameters.api_host}}"
+      execute: true
+    services: ["hotels-onboarding-ui-repo"]
+  hidden: [form, description]
+
+
 hotels-controller-build:
   service_id: pipeline
   parameters:
