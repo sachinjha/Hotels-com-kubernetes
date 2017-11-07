@@ -11,7 +11,7 @@ This a micro services example the team is developing.
     * Under settings click on the "Portal" link in left navigation. 
     * Select the "IBM Developer portal" option under Portal. See image below
     
- ![portal creation](portal creation.png)
+ ![portal creation](./portal_creation.png)
 
 ## Choose any of the options below to deploy microservices as Cloudfoundary apps or a mix of Kubernetes containers and Cloudfoundary.
 
@@ -23,8 +23,12 @@ This a micro services example the team is developing.
 
 hotels-event-create pipeline and hotels-onboarding-ui pipeline require API\_KEY  and API\_SECRET in order to make the API calls to generate events for onboarding of hotels. These values can be obtained by registering as a consumer in API Connect developer portal and subscribing to the Events API. 
 
-Once the API\_KEY  and API\_SECRET values are obtained, one should update the configuration parameters in Deploy Stages of these pipelines and restart them. This will successfully deploy the openwhisk actions and onboarding-ui application.
+Once the API\_KEY  and API\_SECRET values are obtained, one should update the Environment properties in Deploy Stages of these pipelines and restart them. This will successfully deploy the openwhisk actions and onboarding-ui application.
+See images below 
 
+![update API_KEY in API Event](/env_properties1.png)
+
+![update API_KEY in Openwhisk](/env_properties2.png)
 
 ### Deploy Hotels Microservices as containers in Kubernetes Cluster on Bluemix
 > [![Deploy To Bluemix](./.bluemix/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy?repository=https%3A%2F%2Fgithub.com%2Fsachinjha%2FHotels-com-kubernetes.git&cm_mmc=github-readme--native-_-acme-_-create-toolchain&cm_mmca1=000019RT&cm_mmca2=10004796)
