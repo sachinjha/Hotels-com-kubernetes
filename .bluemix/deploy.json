@@ -48,7 +48,7 @@
         "pattern": "\\S"
     }
   },
-  "required": ["selected-region", "bluemix-api-key", "registry-namespace", "prod-cluster-name", "selected-organization", "selected-space", "ui-app-name", "dealsQ-app-name", "hotelQ-app-name","locationQ-app-name","controller-app-name","messaging-app-name"],
+  "required": ["selected-region", "bluemix-api-key", "registry-namespace", "prod-cluster-name", "selected-organization", "selected-space"],
   "form": [
    {
       "type": "validator",
