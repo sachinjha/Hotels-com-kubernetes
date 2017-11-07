@@ -11,10 +11,10 @@ stages:
   - name: Build image
     type: builder
     build_type: cr
-    artifact_dir: output
+    artifact_dir:
     target:
-      region_id: ${REGISTRY_REGION_ID}
-      api_key: ${API_KEY}
+      region_id: ${REGION_ID}
+      api_key: ${BLUEMIX_API_KEY}
     namespace: ${REGISTRY_NAMESPACE}
     image_name: ${CF_APP_NAME}
     script: |
@@ -29,11 +29,11 @@ stages:
   - name: Deploy Kubernetes Pod
     type: deployer
     target:
-      region_id: ${PROD_REGION_ID}
-      organization: ${PROD_ORG_NAME}
-      space: ${PROD_SPACE_NAME}
-      api_key: ${API_KEY}
-      kubernetes_cluster: ${PROD_CLUSTER_NAME}
+      region_id: ${REGION_ID}
+      organization: ${ORG_NAME}
+      space: ${SPACE_NAME}
+      api_key: ${BLUEMIX_API_KEY}
+      kubernetes_cluster: ${KUB_CLUSTER_NAME}
     script: |
       #!/bin/bash
       ./.bluemix/pipeline-DEPLOY.sh
