@@ -18,7 +18,7 @@ hotels-event-create-repo:
   service_id: githubpublic
   parameters:
     repo_name: "hotels-event-create"
-    repo_url: "https://github.com/kalyani75/hotels-event-create"
+    repo_url: "https://github.com/sachinjha/hotels-event-create"
     type: fork
     has_issues: true
 
@@ -26,7 +26,7 @@ hotels-onboarding-ui-repo:
   service_id: githubpublic
   parameters:
     repo_name: "hotels-onboarding-ui"
-    repo_url: "https://github.com/kalyani75/hotels-onboarding-ui"
+    repo_url: "https://github.com/sachinjha/hotels-onboarding-ui"
     type: fork
     has_issues: true
 
@@ -34,7 +34,7 @@ event-api-repo:
   service_id: githubpublic
   parameters:
     repo_name: "event-api"
-    repo_url: "https://github.com/kalyani75/hotels-event-api"
+    repo_url: "https://github.com/sachinjha/hotels-event-api"
     type: fork
     has_issues: true
 
