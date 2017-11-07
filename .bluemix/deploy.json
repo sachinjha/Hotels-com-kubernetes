@@ -17,26 +17,6 @@
       "description": "The Bluemix space",
       "type": "string"
     },
-    "ui-app-name": {
-      "description": "Name of the UI",
-      "type": "string"
-    },
-   "dealsQ-app-name": {
-      "description": "Name of the deals Query app",
-      "type": "string"
-    },
-    "hotelQ-app-name": {
-      "description": "Name of the hotels Query App",
-      "type": "string"
-    },
-    "locationQ-app-name": {
-      "description": "Name of the hotels Query App",
-      "type": "string"
-    },
-    "controller-app-name": {
-      "description": "Name of the hotels Query App",
-      "type": "string"
-    },
     "openwhisk_auth": {
       "type": "string"
     },
@@ -75,42 +55,6 @@
       "url": "/devops/setup/bm-helper/helper.html"
    },
    {
-      "type": "text",
-      "readonly": false,
-      "title": "Hotels UI App Name",
-      "key": "ui-app-name"
-    },
-    {
-      "type": "text",
-      "readonly": false,
-      "title": "Hotels Query App Name",
-      "key": "hotelQ-app-name"
-    },
-    {
-      "type": "text",
-      "readonly": false,
-      "title": " Deals Query App Name",
-      "key": "dealsQ-app-name"
-    },
-    {
-      "type": "text",
-      "readonly": false,
-      "title": "Hotels Location App Name",
-      "key": "locationQ-app-name"
-    },
-    {
-      "type": "text",
-      "readonly": false,
-      "title": "Messaging App Name",
-      "key": "messaging-app-name"
-    },
-  {
-      "type": "text",
-      "readonly": false,
-      "title": "Hotels Controller App Name",
-      "key": "controller-app-name"
-    },
-    {
       "type": "text",
       "readonly": false,
       "title": "APIC Username",

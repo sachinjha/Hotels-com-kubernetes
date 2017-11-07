@@ -16,7 +16,7 @@ stages:
       region_id: ${REGION_ID}
       api_key: ${BLUEMIX_API_KEY}
     namespace: ${REGISTRY_NAMESPACE}
-    image_name: ${CF_APP_NAME}
+    image_name: MULTIPLE_IMAGES
     script: |
       #!/bin/bash
       ./.bluemix/pipeline-BUILD.sh
