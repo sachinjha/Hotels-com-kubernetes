@@ -29,12 +29,6 @@ stages:
   - name: APIC_URL_US
     value: ${APIC_URL_US}
     type: text
-  - name: APIC_USERNAME
-    value: ${APIC_USERNAME}
-    type: text
-  - name: APIC_PASSWORD
-    value: ${APIC_PASSWORD}
-    type: text
   - name: CF_APP_NAME
     value: ${CF_APP_NAME}
     type: text
@@ -42,6 +36,8 @@ stages:
     value: ${REGION_ID}
   - name: ORG
     value: ${ORG_NAME}
+  - name: BLUEMIX_API_KEY
+    value: ${BLUEMIX_API_KEY}
   - name: SPACE
     value: ${SPACE_NAME}
   jobs:

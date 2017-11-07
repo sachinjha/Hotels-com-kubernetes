@@ -72,10 +72,9 @@ onboarding-events-repo-build:
         REPO_BRANCH: "master"
         SPACE_NAME: "{{deploy.parameters.selected-space}}"
         ORG_NAME: "{{deploy.parameters.selected-organization}}"
+        BLUEMIX_API_KEY: "{{deploy.parameters.bluemix-api-key}}"
         REGION_ID: "{{deploy.parameters.selected-region}}"
         APIC_URL_US: "{{deploy.parameters.apic-url-us}}"
-        APIC_USERNAME: "{{deploy.parameters.apic-username}}"
-        APIC_PASSWORD: "{{deploy.parameters.apic-password}}"
         CF_APP_NAME: "{{deploy.parameters.api-app-name}}"
       execute: true
     services: ["event-api-repo"]
@@ -106,7 +105,7 @@ hotels-container-projects-build:
   parameters:
     name: "hotels-container-projects"
     configuration:
-      content: $file(hotels-container-projects.pipeline1.yml)
+      content: $file(hotels-container-projects.pipeline.yml)
       env:
         REPO: "hotels-container-projects-repo"
         REPO_BRANCH: "master"
@@ -141,8 +140,6 @@ deploy:
     api_key:
     api_secret:
     api_host:
-    apic-username:
-    apic-password:
     bluemix-api-key:
     prod-cluster-name:
     registry-namespace:

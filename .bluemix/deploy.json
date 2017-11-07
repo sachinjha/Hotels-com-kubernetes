@@ -20,14 +20,6 @@
     "openwhisk_auth": {
       "type": "string"
     },
-     "apic-username": {
-      "description": "APIC username",
-      "type": "string"
-    },
-    "apic-password": {
-      "description": "APIC password",
-      "type": "string"
-    },
     "api-app-name": {
       "description": "API cf app name",
       "type": "string"
@@ -54,18 +46,6 @@
       "type": "validator",
       "url": "/devops/setup/bm-helper/helper.html"
    },
-   {
-      "type": "text",
-      "readonly": false,
-      "title": "APIC Username",
-      "key": "apic-username"
-    },
-    {
-      "type": "text",
-      "readonly": false,
-      "title": "APIC Password",
-      "key": "apic-password"
-    },
     {
       "type": "text",
       "readonly": false,
