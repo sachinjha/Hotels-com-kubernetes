@@ -60,7 +60,7 @@ hotels-controller-build:
         REGION_ID: "{{deploy.parameters.selected-region}}"
         BLUEMIX_API_KEY: "{{deploy.parameters.bluemix-api-key}}"
         KUB_CLUSTER_NAME: "{{deploy.parameters.prod-cluster-name}}"
-        REGISTRY_NAMESPACE: "{{deploy.parameters.registry-namespac}}"
+        REGISTRY_NAMESPACE: "{{deploy.parameters.registry-namespace}}"
       execute: true
     services: ["hotels-controller-repo"]
   hidden: [form, description]
