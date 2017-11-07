@@ -3,6 +3,18 @@
 This a micro services example the team is developing.
 
 
+# Steps to be followed:
+1. Login to IBM Cloud , choose a space and create an instance of "API Connect"
+2. Create Developer portal in API Connect 
+    * Go to the Dashboard and select the instance of API Connect create above. 
+    * Go to the API Connect Dashboard and click on the "Settings" tab.
+    * Under settings click on the "Portal" link in left navigation. 
+    * Select the "IBM Developer portal" option under Portal. See image below
+    
+ ![portal creation](portal creation.png)
+
+## Choose any of the options below to deploy microservices as Cloudfoundary apps or a mix of Kubernetes containers and Cloudfoundary.
+
 ### Deploy Hotels Microservices as Cloudfoundary apps on Bluemix
 * [Deploy your own Hotels Microservices with IBM DevOps Toolchain](TOOLCHAIN-README.md)
 
